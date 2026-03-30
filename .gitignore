@@ -1,0 +1,27 @@
+Byte-compiled / optimized / DLL files
+
+pycache/
+*.py[cod]
+*$py.class
+
+Environments
+
+.venv/
+env/
+venv/
+ENV/
+
+Streamlit
+
+.streamlit/
+
+OS generated files
+
+.DS_Store
+Thumbs.db
+
+Data files (optional, but recommended to keep raw data out of git)
+
+*.csv
+*.xlsx
+*.json
