@@ -145,7 +145,7 @@ class PipelineEngine:
 # --- STREAMLIT UI LAYOUT ---
 
 def main():
-    st.set_page_config(page_title="RAW Pipeline Builder", layout="wide", page_icon="🔗")
+    st.set_page_config(page_title="RAW Pipeline Builder | Extract, Transform, Load", layout="wide", page_icon="🔗")
     
     st.title("🔗 RAW Data Pipeline Builder")
     st.markdown("### *ETL Orchestration & Data Quality Control*")
