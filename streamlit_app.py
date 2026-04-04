@@ -116,7 +116,10 @@ class PipelineEngine:
             now = datetime.datetime.now()
             
             # Vectorized age calculation
-            df['Age'] = df['Birthdate'].apply(lambda x: now.year - x.year if pd.notnull(x) else 0)
+            df['Age'] = df['Birthdate'].apply(
+                lambda x: (now.year - x.year - (1 if (now.month, now.day) < (x.month, x.day) else 0))
+                if pd.notnull(x) else 0
+            )
             self.log("Enriched dataset with 'Age' column.")
 
         # Derived Field: Fiscal Quarter from Date
@@ -130,7 +133,8 @@ class PipelineEngine:
 
     def finalize(self, df: pd.DataFrame) -> Dict[str, Any]:
         end_time = datetime.datetime.now()
-        duration = (end_time - self.quality_report["start_time"]).total_seconds()
+        start = self.quality_report["start_time"]
+        duration = (end_time - start).total_seconds() if start is not None else 0.0
         
         report = {
             "Final Row Count": len(df),
@@ -166,7 +170,7 @@ def main():
     dedupe_keys = st.sidebar.text_input("Deduplication Keys (comma separated)", "Email,ID")
     
     st.sidebar.header("3. Delivery")
-    output_format = st.sidebar.selectbox("Destination Format", ["CSV", "Parquet", "Cloud Bucket"])
+    output_format = st.sidebar.selectbox("Destination Format", ["CSV"])
     
     if st.sidebar.button("Generate Sample Messy Data"):
         sample_data = pd.DataFrame({
@@ -210,6 +214,7 @@ def main():
                         time.sleep(0.3)
                     
                     # 4. Deduplication
+                    st.write("Step 4: Deduplicating...")
                     keys = [k.strip() for k in dedupe_keys.split(",") if k.strip()]
                     df = engine.deduplicate(df, keys)
                     time.sleep(0.3)
